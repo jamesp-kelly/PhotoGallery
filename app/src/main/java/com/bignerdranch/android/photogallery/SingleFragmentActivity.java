@@ -1,4 +1,4 @@
-package com.bignerdranch.android.nerdlauncher;
+package com.bignerdranch.android.photogallery;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
