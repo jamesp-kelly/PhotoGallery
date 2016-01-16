@@ -9,22 +9,19 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-/**
- * Created by james on 13/01/2016.
- */
 public class ThumbnailDownloader<T> extends HandlerThread {
-
-    private static String TAG = "ThumbnailDownloader";
-    private static int MESSAGE_DOWNLOAD = 0;
+    private static final String TAG = "ThumbnailDownloader";
+    private static final int MESSAGE_DOWNLOAD = 0;
 
     private Handler mRequestHandler;
-    private ConcurrentHashMap<T, String> mRequestMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<T,String> mRequestMap = new ConcurrentHashMap<>();
     private Handler mResponseHandler;
     private ThumbnailDownloadListener<T> mThumbnailDownloadListener;
 
     public interface ThumbnailDownloadListener<T> {
-        void onThumbnailDownloadListener(T target, Bitmap thumbnail);
+        void onThumbnailDownloaded(T target, Bitmap bitmap);
     }
 
     public void setThumbnailDownloadListener(ThumbnailDownloadListener<T> listener) {
@@ -75,21 +72,20 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             }
 
             byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
-            final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+            final Bitmap bitmap = BitmapFactory
+                    .decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
             Log.i(TAG, "Bitmap created");
 
             mResponseHandler.post(new Runnable() {
-                @Override
                 public void run() {
                     if (mRequestMap.get(target) != url) {
                         return;
                     }
 
                     mRequestMap.remove(target);
-                    mThumbnailDownloadListener.onThumbnailDownloadListener(target, bitmap);
+                    mThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);
                 }
             });
-
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }

@@ -1,24 +1,9 @@
 package com.bignerdranch.android.photogallery;
 
-import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by james on 12/01/2016.
- */
 public class GalleryItem {
-    @SerializedName("title")
     private String mCaption;
-
-    @SerializedName("id")
     private String mId;
-
-    @SerializedName("url_s")
     private String mUrl;
-
-    @Override
-    public String toString() {
-        return mCaption;
-    }
 
     public String getCaption() {
         return mCaption;
@@ -42,5 +27,10 @@ public class GalleryItem {
 
     public void setUrl(String url) {
         mUrl = url;
+    }
+
+    @Override
+    public String toString() {
+        return mCaption;
     }
 }
